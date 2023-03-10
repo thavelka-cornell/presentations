@@ -169,9 +169,6 @@ Key Next Development Steps
 
 *  Test and validate inter-processor mailbox mutex
 *  Create first draft design description of Nexus app-to-app messaging protocol
-*  Implement external flash module
-*  Enable ADC thread or k_work instance
-*  Implement and enable temperature sensing
 
 
 To Extend This Template
