@@ -7,7 +7,6 @@ Topics covered
 * Overview of Dual-Core Applications - app coordination
 * Environment and Tools - toolchain produces single binary
 * Features Tested And Features Active
-* Physical Set-Up
 * Shared Memory Considerations
 * Key Next Development Steps
 * To Extend This Template
@@ -53,38 +52,6 @@ Gateway Features which we have implemented, tested, and some of which are active
 +---------+-----------+------------+---------------------------------------------+
 | mailbox |    yes    |     yes    |  provides application coordination          |
 +---------+-----------+------------+---------------------------------------------+
-
-
-
-Physical Set-Up
-***************
-
-::
-  {
-  1   + ----------------------------------+
-  1   |                                   |
-  1   |   --------          --------      |
-  1   |                                   |
-  1   |   Click 2           Click 4       |
-  1   |                                   |
-  1   |   --------          --------      |
-  1   |                                   |
-  1   |                                   |
-  1   |       RT G                        |
-  1   |       XX N                        |
-  1   |       11 D                        |
-  1   |   --------          --------      |
-  1   |                                   |
-  1   |   Click Cell        Click 3       |
-  1   |                                   |
-  1   |   --------          --------      |
-  1   |                     G3||||        |      +---------+
-  1   |                     NV++++================  KX132  |
-  1   |                     D3            |      +---------+
-  1   |                                   |
-  1   |        RX_2 TX_2                  |
-  1   + ----------------------------------+
-  }
 
 
 Shared Memory Considerations
