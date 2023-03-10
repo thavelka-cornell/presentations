@@ -86,11 +86,6 @@ Physical Set-Up
 
 
 
-
-
-
-
-
 Shared Memory Considerations
 ****************************
 
@@ -109,6 +104,103 @@ The LPC55S69 Inter-Processor Mailbox (IPM) provides us a way to effectively shar
 
 Footnote:
 (1)  https://elinux.org/Device_Tree_Usage#Special_Nodes
+
+
+Device Tree Source excerpt
+**************************
+
+From `zephyr/dts/arm/nxp/nxp_lpc55S6x_common.dtsi`:
+::
+ 54         /* lpc55S6x Memory configurations:
+ 55          *
+ 56          * RAM blocks SRAM0 through SRAM4 are contiguous address ranges
+ 57          *
+ 58          * LPC55S66: 144KB RAM, RAMX: 32K, SRAM0: 32K
+ 59          * LPC55S69: 320KB RAM, RAMX: 32K, SRAM0: 64K, SRAM1: 64K,
+ 60          *                      SRAM2: 64K, SRAM3: 64K, SRAM4: 16K
+ 61          */
+ 62         sram0: memory@20000000 {
+ 63                 compatible = "mmio-sram";
+ 64                 reg = <0x20000000 DT_SIZE_K(64)>;
+ 65         };
+ 66 
+ 67         sram1: memory@20010000 {
+ 68                 compatible = "mmio-sram";
+ 69                 reg = <0x20010000 DT_SIZE_K(64)>;
+ 70         };
+ 71 
+ 72         sram2: memory@20020000 {
+ 73                 compatible = "mmio-sram";
+ 74                 reg = <0x20020000 DT_SIZE_K(64)>;
+ 75         };
+ 76 
+ 77         sram3: memory@20030000 {
+ 78                 compatible = "mmio-sram";
+ 79                 reg = <0x20030000 DT_SIZE_K(64)>;
+ 80         };
+ 81 
+ 82         sram4: memory@20040000 {
+ 83                 compatible = "mmio-sram";
+ 84                 reg = <0x20040000  DT_SIZE_K(16)>;
+ 85         };
+
+
+Our overlay changes for core number 1:
+::
+ chosen {
+     zephyr,sram = &sram0;
+     .
+     .
+     .
+ }
+
+ &sram1 {
+     compatible = "mmio-sram";
+     reg = <0x20000000 DT_SIZE_K(128)>;
+ };
+
+ &sram2 {
+     status = "disabled";
+ };
+
+ &sram3 {
+     status = "disabled";
+ };
+
+
+Our overlay changes for core number 2:
+::
+ chosen {
+     zephyr,sram = &sram3;
+     .
+     .
+     .
+ }
+
+ &sram1 {
+     compatible = "mmio-sram";
+     reg = <0x20000000 DT_SIZE_K(128)>;
+ };
+
+ &sram2 {
+     status = "disabled";
+ };
+
+ &sram0 {
+     status = "disabled";
+ };
+
+Take-away points from our DTS overlays:
+
+  *  core 0 choses SRAM0 partition for its application and Zephyr dedicated RAM
+  *  core 0 sets SRAM1 partition to 128kB and leaves it enabled
+  *  core 0 disables SRAM2 and SRAM3 partitions
+
+  *  core 1 choses SRAM3 partition for its application and Zephyr dedicated RAM
+  *  core 1 sets SRAM1 partition to 128kB and leaves it enabled
+  *  core 1 disables SRAM2 and SRAM0 partitions
+
+RAM parititions 0 and 3 are visible to one core only, RAM partition 1 is visible to and shared by both cores.  RAM partition 1 is resized to extend over the physical memory which is originally defined by DTS node for SRAM2.
 
 
 Key Next Development Steps
