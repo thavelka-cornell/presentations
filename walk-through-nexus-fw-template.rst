@@ -60,29 +60,29 @@ Physical Set-Up
 ***************
 
 ::
-	+----------------------------------+
-	|                                  |
-	|  --------          --------      |
-	|                                  |
-	|  Click 2           Click 4       |
-	|                                  |
-	|  --------          --------      |
-	|                                  |
-	|                                  |
-	|      RT G                        |
-	|      XX N                        |
-	|      11 D                        |
-	|  --------          --------      |
-	|                                  |
-	|  Click Cell        Click 3       |
-	|                                  |
-	|  --------          --------      |
-	|                    G3||||        |      +---------+
-	|                    NV++++================  KX132  |
-	|                    D3            |      +---------+
-	|                                  |
-	|       RX_2 TX_2                  |
-	+----------------------------------+
+  + ----------------------------------+
+  |                                   |
+  |   --------          --------      |
+  |                                   |
+  |   Click 2           Click 4       |
+  |                                   |
+  |   --------          --------      |
+  |                                   |
+  |                                   |
+  |       RT G                        |
+  |       XX N                        |
+  |       11 D                        |
+  |   --------          --------      |
+  |                                   |
+  |   Click Cell        Click 3       |
+  |                                   |
+  |   --------          --------      |
+  |                     G3||||        |      +---------+
+  |                     NV++++================  KX132  |
+  |                     D3            |      +---------+
+  |                                   |
+  |        RX_2 TX_2                  |
+  + ----------------------------------+
 
 
 
@@ -144,6 +144,12 @@ From `zephyr/dts/arm/nxp/nxp_lpc55S6x_common.dtsi`:
  84                 reg = <0x20040000  DT_SIZE_K(16)>;
  85         };
 
+We resize SRAM1 partition in our project's `nexus.dtsi` source file:
+::
+ &sram1 {
+     compatible = "mmio-sram";
+     reg = <0x20000000 DT_SIZE_K(128)>;
+ };
 
 Our overlay changes for core number 1:
 ::
@@ -154,19 +160,13 @@ Our overlay changes for core number 1:
      .
  }
 
- &sram1 {
-     compatible = "mmio-sram";
-     reg = <0x20000000 DT_SIZE_K(128)>;
- };
-
  &sram2 {
-     status = "disabled";
+     status = "disabled";  // disabled because it's combined with SRAM1 paritition
  };
 
  &sram3 {
-     status = "disabled";
+     status = "disabled";  // disabled to respect other core's application memory
  };
-
 
 Our overlay changes for core number 2:
 ::
@@ -176,11 +176,6 @@ Our overlay changes for core number 2:
      .
      .
  }
-
- &sram1 {
-     compatible = "mmio-sram";
-     reg = <0x20000000 DT_SIZE_K(128)>;
- };
 
  &sram2 {
      status = "disabled";
@@ -193,14 +188,12 @@ Our overlay changes for core number 2:
 Take-away points from our DTS overlays:
 
   *  core 0 choses SRAM0 partition for its application and Zephyr dedicated RAM
-  *  core 0 sets SRAM1 partition to 128kB and leaves it enabled
   *  core 0 disables SRAM2 and SRAM3 partitions
 
   *  core 1 choses SRAM3 partition for its application and Zephyr dedicated RAM
-  *  core 1 sets SRAM1 partition to 128kB and leaves it enabled
   *  core 1 disables SRAM2 and SRAM0 partitions
 
-RAM parititions 0 and 3 are visible to one core only, RAM partition 1 is visible to and shared by both cores.  RAM partition 1 is resized to extend over the physical memory which is originally defined by DTS node for SRAM2.
+  *  dual-core project wide dtsi file re-sizes shared SRAM1 partition from 64kB to 128kB
 
 
 Key Next Development Steps
