@@ -15,7 +15,7 @@ Topics covered
 Scope of Nexus Firmware Walk-Through
 ************************************
 
-This document aims to describe Nexus Template Firmware, a commit of Nexus gateway firmware which represents the integration of most key programmatic device features which "live" in the Nexus Gateway's primary micro-controller unit.  Firmware toolchain and development enrinment are mentioned by name.  Prototype board set-up is described to support physical running and observation of firmware on target hardware.  Dual-Core, dual application design choices and constraints are desribed.  Next development steps, and "common path" or likely ways to extend firmware functionality are briefly described.
+This document aims to describe Nexus Template Firmware, a commit of Nexus gateway firmware which represents the integration of most key programmatic features which "live" in the Nexus Gateway's primary micro-controller unit.  Firmware toolchain and development enrinment are mentioned by name.  Dual-Core, dual application design choices and constraints are desribed.  Next development steps, and "common path" or likely ways to extend firmware functionality are briefly described.
 
 
 Dual-Core Application Overview
